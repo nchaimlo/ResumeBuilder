@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import BaseUserManager
 
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -10,6 +11,26 @@ class Languages(models.Model):
 
 class Interests(models.Model):
     interest = models.CharField(max_length=100, unique=True)
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        # Create and return a new user instance
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        # Create and return a new superuser instance
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
+
 class MyUser(AbstractUser):
     username = models.CharField(max_length=64, blank=False, null=False, unique=True)
     first_name = models.CharField(max_length=100, blank=False, null=False)
@@ -48,6 +69,8 @@ class MyUser(AbstractUser):
         if self.pk is None:
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
+
+    objects = MyUserManager()
 
 
 class Education(models.Model):
