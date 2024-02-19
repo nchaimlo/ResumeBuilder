@@ -38,7 +38,7 @@ class MyUser(AbstractUser):
     email = models.EmailField(max_length=254, blank=False, null=False, unique=True)
     password = models.CharField(max_length=128, blank=False, null=False)
     is_staff = models.BooleanField(default=False)
-    phone_number = models.CharField(max_length=20, unique=True)
+    phone_number = models.CharField(max_length=20,blank=True, null=True, unique=True)
     address = models.CharField(max_length=255)
     linkedin_url = models.URLField(max_length=200)
     bio = models.TextField(blank=True)

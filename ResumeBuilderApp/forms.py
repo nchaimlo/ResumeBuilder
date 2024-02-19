@@ -9,3 +9,4 @@ class MyUserCreationForm(UserCreationForm):
 class MyAuthenticationForm(AuthenticationForm):
     class Meta:
         model = MyUser
+        fields = ('username', 'password')
